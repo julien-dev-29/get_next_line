@@ -56,11 +56,13 @@ void	error(char *str)
 
 int	contains_newline(char *s)
 {
-	int	n;
+	int	i;
+	int len;
 
-	n = 0;
-	while (n < jr_strlen(s))
-		if (s[n] == '\n')
+	i = 0;
+	len = jr_strlen(s);
+	while (i < len)
+		if (s[i++] == '\n')
 			return (1);
 	return (0);
 }
@@ -70,11 +72,11 @@ char	*extract_line(char *stash)
 	char	*res;
 	size_t	n;
 
-	res = (char *)malloc(jr_strlen(stash));
+	res = (char *)malloc(jr_strlen(stash) + 1);
 	if (!res)
 		return (NULL);
 	n = 0;
-	while (stash[n] != '\n')
+	while (stash[n] != '\n' || stash[n] != EOF)
 	{
 		res[n] = stash[n];
 		n++;
@@ -88,16 +90,20 @@ char	*remove_line(char *stash)
 	char	*res;
 	size_t	i;
 	size_t	j;
+	size_t	len;
 
-	res = (char *)malloc(jr_strlen(stash));
+	res = (char *)malloc(jr_strlen(stash) + 1);
 	if (!res)
 		return (NULL);
 	i = 0;
 	while (stash[i] != '\n')
 		i++;
+	i--;
 	j = 0;
-	while (i < (size_t)jr_strlen(stash))
+	len = (size_t)jr_strlen(stash); 
+	while (i < len)
 		res[j++] = stash[i++];
+	res[j] = '\0';
 	return (res);
 }
 
@@ -119,7 +125,6 @@ int	get_next_line(const int fd, char **line)
         return 0;
 	*line = extract_line(stash);
 	stash = remove_line(stash);
-	free(stash);
 	return (1);
 }
 
