@@ -1,0 +1,2 @@
+// Compiler le main avec la librairie
+gcc main.c -I includes -L . -ljr

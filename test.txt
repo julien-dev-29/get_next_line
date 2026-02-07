@@ -1,0 +1,11 @@
+Le langage C est un langage de programmation
+créé au début des années 1970 par Dennis Ritchie aux laboratoires Bell. 
+Malgré son âge, il reste l’un des langages les plus influents et les plus utilisés dans le monde de l’informatique.
+
+C est un langage bas niveau mais portable, ce qui signifie qu’il permet de manipuler directement la mémoire et le matériel tout en restant utilisable sur de nombreuses architectures. C’est pour cette raison qu’il est largement utilisé pour développer des systèmes d’exploitation (comme Unix et une grande partie de Linux), des pilotes matériels, des systèmes embarqués, et des logiciels où la performance est critique.
+
+Une des forces du C est sa simplicité apparente : peu de mots-clés, une syntaxe compacte, et un modèle proche du fonctionnement réel de l’ordinateur. Mais cette simplicité cache aussi sa difficulté : le programmeur doit gérer lui-même la mémoire, ce qui peut entraîner des erreurs comme les fuites mémoire ou les dépassements de tampon.
+
+Le C a aussi servi de base à de nombreux langages modernes comme C++, Java, C# et même Python (dont l’interpréteur est écrit en C). Comprendre le C permet donc de mieux comprendre comment fonctionnent les autres langages et les systèmes en profondeur.
+
+En résumé, le langage C est un outil puissant, exigeant, mais extrêmement formateur. Il apprend à programmer “près de la machine”, à écrire du code efficace, et à comprendre ce qui se passe vraiment derrière l’écran.
