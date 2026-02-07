@@ -7,51 +7,50 @@
 
 int	jr_strlen(const char *str)
 {
-	int	n;
+	int	i;
 
 	if (!str)
-		return (-1);
-	n = 0;
-	while(str[n] != '\0')
-		n++;
-	return (n);
+		return (0);
+	i = 0;
+	while(str[i])
+		i++;
+	return (i);
+}
+
+char	*jr_strchr(const char *s, int c)
+{
+	if (!s)
+		return (NULL);
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	return (NULL);
 }
 
 char	*jr_strjoin(const char *s1, const char *s2)
 {
 	size_t	i;
 	size_t	j;
-	char	*result;
+	char	*res;
 
-	if (!s1 || !s2)
-		return (NULL);
 	i = 0;
 	j = 0;
-	while (s1[i] != '\0')
-		i++;
-	while (s2[j] != '\0')
-		j++;
-	result = malloc(sizeof(char) * (i + j + 1));
-	if (!result)
+	res = malloc(jr_strlen(s1) + jr_strlen(s2)  + 1);
+	if (!res)
 		return (NULL);
-	if (!s1 || !s2 || !result)
-		return (NULL);
-	i = 0;
-	while (s1[i] != '\0')
+	while (s1 && s1[i])
 	{
-		result[i] = s1[i];
+		res[i] = s1[i];
 		i++;
 	}
-	j = 0;
-	while (s2[j] != '\0')
-		result[i++] = s2[j++];
-	result[i] = '\0';
-	return (result);
-}
-
-void	error(char *str)
-{
-	printf("%s", str);
+	while (s2 && s2[j])
+		res[i++] = s2[j++];
+	res[i] = '\0';
+	free(s1);
+	return (res);
 }
 
 int	contains_newline(char *s)
@@ -61,6 +60,8 @@ int	contains_newline(char *s)
 
 	i = 0;
 	len = jr_strlen(s);
+	if (len < 0)
+		return (0);
 	while (i < len)
 		if (s[i++] == '\n')
 			return (1);
@@ -69,20 +70,25 @@ int	contains_newline(char *s)
 
 char	*extract_line(char *stash)
 {
-	char	*res;
-	size_t	n;
+	int		i;
+	char	*line;
 
-	res = (char *)malloc(jr_strlen(stash) + 1);
-	if (!res)
+	if (!stash || !stash[0])
 		return (NULL);
-	n = 0;
-	while (stash[n] != '\n')
+	i = 0;
+	while (stash[i] && stash[i] != '\n')
+		i++;
+	line = malloc(i + 1);
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (stash[i] && stash[i] != '\n')
 	{
-		res[n] = stash[n];
-		n++;
+		line[i] = stash[i];
+		i++;
 	}
-	res[n] = '\0';
-	return (res);
+	line[i] = '\0';
+	return (line);
 }
 
 char	*remove_line(char *stash)
@@ -127,6 +133,7 @@ int	get_next_line(const int fd, char **line)
 	if (!stash || stash[0] == '\0')
         return 0;
 	*line = extract_line(stash);
+	free(stash);
 	stash = remove_line(stash);
 	return (1);
 }
