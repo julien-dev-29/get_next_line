@@ -30,7 +30,7 @@ char	*jr_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char	*jr_strjoin(const char *s1, const char *s2)
+char	*jr_strjoin(char *s1, char *s2)
 {
 	size_t	i;
 	size_t	j;
@@ -51,21 +51,6 @@ char	*jr_strjoin(const char *s1, const char *s2)
 	res[i] = '\0';
 	free(s1);
 	return (res);
-}
-
-int	contains_newline(char *s)
-{
-	int	i;
-	int len;
-
-	i = 0;
-	len = jr_strlen(s);
-	if (len < 0)
-		return (0);
-	while (i < len)
-		if (s[i++] == '\n')
-			return (1);
-	return (0);
 }
 
 char	*extract_line(char *stash)
@@ -91,50 +76,53 @@ char	*extract_line(char *stash)
 	return (line);
 }
 
-char	*remove_line(char *stash)
+char	*clean_stash(char *stash)
 {
-	char	*res;
 	size_t	i;
 	size_t	j;
-	int		len;
-
-	res = (char *)malloc(jr_strlen(stash) + 1);
-	if (!res)
-		return (NULL);
+	char	*new_stash;
+	
 	i = 0;
-	while (stash[i] != '\n' && stash[i] != '\0')
-		i++;
-	i++;
 	j = 0;
-	len = jr_strlen(stash); 
-	if (len < 0)
+	while (stash[i] && stash[i] != '\n')
+		i++;
+	if (!stash[i])
+	{
+		free(stash);
 		return (NULL);
-	while (i < len)
-		res[j++] = stash[i++];
-	res[j] = '\0';
-	return (res);
+	}
+	i++;
+	new_stash = (char *)malloc(jr_strlen(stash) - i + 1);
+	if (!new_stash)
+		return (NULL);
+	while (stash[i])
+		new_stash[j++] = stash[i++];
+	new_stash[j] = '\0';
+	free(stash);
+	return (new_stash);
 }
 
 int	get_next_line(const int fd, char **line)
 {
-	static	char	*stash = NULL;
-	char			buf[BUFSIZ + 1];
-	size_t			r;
+	static	char	*stash;
+	char			buffer[BUFSIZ + 1];
+	size_t			bytes;
 
-	while (!contains_newline(stash))
+	if (fd < 0 || !line || BUFSIZ <=0)
+		return (-1);
+	bytes = 1;
+	while(!jr_strchr(stash, '\n') && bytes > 0)
 	{
-		r = read(fd, buf, BUFSIZ);
-		if (r <= 0)
-			break;
-		buf[r] = '\0';
-		free(stash);
-		stash = jr_strjoin(stash, buf);
+		bytes = read(fd, buffer, BUFSIZ);
+		if (bytes < 0)
+			return (-1);
+		buffer[bytes] = '\0';
+		stash = jr_strjoin(stash, buffer);
 	}
-	if (!stash || stash[0] == '\0')
-        return 0;
+	if (bytes == 0 && (!stash || !stash[0]))
+			return (0);
 	*line = extract_line(stash);
-	free(stash);
-	stash = remove_line(stash);
+	stash = clean_stash(stash);
 	return (1);
 }
 
@@ -142,9 +130,8 @@ int main(void)
 {
 	int		fd = open("test.txt", O_RDONLY, 0);
 	char	*line;
-	if (get_next_line(fd, &line) == 1)
+	while (get_next_line(fd, &line) > 0 )
 	{
-		write(1, "yolo", 4);
 		write(1, line, jr_strlen(line));
 		write(1, "\n", 1);
 		free(line);
