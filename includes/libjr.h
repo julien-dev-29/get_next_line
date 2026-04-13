@@ -54,14 +54,15 @@ int		jr_tolower(int c);
 void	jr_memdel(void **ap);
 char	*jr_strnew(size_t size);
 void	jr_strdel(char **as);
+char	*jr_strchr(const char *str, int c);
 void	jr_strclr(char *s);
 void	jr_striter(char *s, void (*f)(char *));
 void	jr_striteri(char *s, void (*f)(unsigned int, char *));
 char	*jr_strmap(const char *s, char (*f)(char));
 char	*jr_strmapi(const char *s, char (*f)(unsigned int, char));
 int		jr_strequ(const char *s1, const char *s2);
-char	*jr_strsub(const char *s, unsigned int start, size_t len);
-char	*jr_strjoin(const char *s1, const char *s2);
+char	*jr_substr(char *s, unsigned int start, size_t len);
+char	*jr_strjoin(char *s1, char *s2);
 char	*jr_strtrim(const char *s);
 char	**jr_strsplit(const char *s, char c);
 char	*jr_itoa(int n);
@@ -79,5 +80,6 @@ void	jr_lstadd_front(t_list **alst, t_list *new);
 void	jr_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list	jr_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void	*jr_calloc(size_t nmemb, size_t size);
+int		jr_getnbr(const char *str);
 
 #endif
